@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI MV 製作 - 視覺與聲音的完美共振 | 合作招商</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            light: '#F8F9FA',
+                            dark: '#1A1A1A',
+                            accent: '#8E9AAF',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for Video Background and Overlays */
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            background: #000;
+        }
+
+        /* Using YouTube iframe API to ensure autoplay works smoothly */
+        .video-container iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            /* Make iframe larger than container to hide YouTube controls/logos */
+            min-width: 120%;
+            min-height: 120%;
+            pointer-events: none;
+            opacity: 0.6; /* Dim the video so text is readable */
+            transition: opacity 2s ease-in-out;
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(26,26,26,0.3) 0%, rgba(26,26,26,0.8) 100%);
+            z-index: 0;
+        }
+
+        /* Glassmorphism effects */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-nav {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-nav.scrolled {
+            background: rgba(26, 26, 26, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+    </style>
+</head>
+<body class="bg-brand-dark text-brand-light font-sans antialiased overflow-x-hidden selection:bg-brand-gold selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 glass-nav py-4 px-6 md:px-12 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-serif font-bold text-white tracking-wider flex items-center gap-2 group">
+                <i class="fa-solid fa-wand-magic-sparkles text-brand-gold group-hover:animate-pulse"></i>
+                <span>Aura<span class="text-brand-gold">MV</span></span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#about" class="text-gray-300 hover:text-brand-gold transition-colors">服務優勢</a>
+                <a href="#showcase" class="text-gray-300 hover:text-brand-gold transition-colors">作品展示</a>
+                <a href="#features" class="text-gray-300 hover:text-brand-gold transition-colors">AI 技術</a>
+                <a href="#contact" class="px-6 py-2 rounded-full border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.6)]">
+                    合作洽詢
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white focus:outline-none" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu Dropdown (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full glass-nav border-t border-gray-800 flex flex-col items-center py-4 space-y-4">
+             <a href="#about" class="text-gray-300 hover:text-brand-gold transition-colors w-full text-center py-2" onclick="toggleMobileMenu()">服務優勢</a>
+             <a href="#showcase" class="text-gray-300 hover:text-brand-gold transition-colors w-full text-center py-2" onclick="toggleMobileMenu()">作品展示</a>
+             <a href="#features" class="text-gray-300 hover:text-brand-gold transition-colors w-full text-center py-2" onclick="toggleMobileMenu()">AI 技術</a>
+             <a href="#contact" class="text-brand-gold w-full text-center py-2" onclick="toggleMobileMenu()">合作洽詢</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+        
+        <!-- YouTube Video Background -->
+        <div class="video-container" id="video-bg-container">
+            <!-- The iframe is injected via JS to control autoplay and looping cleanly -->
+            <div id="youtube-player"></div>
+        </div>
+        <div class="gradient-overlay"></div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20">
+            <span class="inline-block py-1 px-3 rounded-full border border-brand-gold/50 text-brand-gold text-sm tracking-widest uppercase mb-6 opacity-0 animate-fade-in-up backdrop-blur-sm bg-black/20">
+                Next-Gen Music Video Production
+            </span>
+            <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight opacity-0 animate-fade-in-up delay-100 drop-shadow-lg">
+                讓音樂視覺化<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-200">超越想像的邊界</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 mb-10 font-light opacity-0 animate-fade-in-up delay-200 max-w-2xl mx-auto drop-shadow-md">
+                運用頂尖 AI 生成技術，為您的音樂打造電影級質感 MV。從概念到成片，以極致效率與無限創意，完美詮釋每一段旋律的靈魂。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in-up delay-300">
+                <a href="#contact" class="px-8 py-4 rounded-full bg-brand-gold text-brand-dark font-bold hover:bg-yellow-400 transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] transform hover:-translate-y-1">
+                    啟動您的專案
+                </a>
+                <button onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 rounded-full border border-white/30 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2 group">
+                    <span>了解更多</span>
+                    <i class="fa-solid fa-arrow-down group-hover:translate-y-1 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 animate-pulse-slow">
+            <div class="w-[30px] h-[50px] rounded-full border-2 border-white/50 flex justify-center p-2">
+                <div class="w-1 h-3 bg-brand-gold rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About / Advantages Section -->
+    <section id="about" class="py-24 relative z-20 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-serif font-bold mb-4">為什麼選擇 <span class="text-brand-gold">AI MV</span>？</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">打破傳統實拍的限制，以更低的成本、更快的速度，實現大師級的視覺特效與超現實場景。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Advantage 1 -->
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-14 h-14 rounded-full bg-brand-gold/10 flex items-center justify-center mb-6 group-hover:bg-brand-gold/20 transition-colors">
+                        <i class="fa-solid fa-infinity text-2xl text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">無限創意視覺</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">不論是賽博龐克城市、奇幻史詩世界，還是抽象的心靈意境，AI 都能將音樂人腦海中的畫面精準具象化。</p>
+                </div>
+                
+                <!-- Advantage 2 -->
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-14 h-14 rounded-full bg-brand-gold/10 flex items-center justify-center mb-6 group-hover:bg-brand-gold/20 transition-colors">
+                        <i class="fa-solid fa-bolt text-2xl text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">極致製作效率</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">省去繁瑣的勘景、搭景與實地拍攝時間。從分鏡腳本到最終算圖，將數月的製作週期縮短至數週甚至數天。</p>
+                </div>
+
+                <!-- Advantage 3 -->
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group">
+                    <div class="w-14 h-14 rounded-full bg-brand-gold/10 flex items-center justify-center mb-6 group-hover:bg-brand-gold/20 transition-colors">
+                        <i class="fa-solid fa-coins text-2xl text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">優化製作預算</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">將昂貴的實拍預算轉化為頂級的視覺特效。讓獨立音樂人或廠牌都能擁有媲美好萊塢等級的宣傳規格。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase Section (Mockup) -->
+    <section id="showcase" class="py-24 bg-[#111] relative z-20">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-3xl md:text-5xl font-serif font-bold mb-4">精選 <span class="text-brand-gold">作品</span></h2>
+                    <p class="text-gray-400">見證 AI 如何賦予音樂全新的視覺生命力。</p>
+                </div>
+                <button class="text-brand-gold hover:text-white transition-colors flex items-center gap-2 group">
+                    查看完整作品集 <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+
+            <!-- Grid Gallery -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Project 1 -->
+                <div class="group relative rounded-xl overflow-hidden cursor-pointer aspect-video">
+                    <!-- Placeholder image matching the zen theme -->
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1284&auto=format&fit=crop" alt="Zen Landscape" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-100"></div>
+                    <div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <span class="text-xs font-bold tracking-wider text-brand-gold uppercase mb-2 block">Ambient / Zen</span>
+                        <h3 class="text-2xl font-serif font-bold text-white mb-1">Inner Peace 靜心之旅</h3>
+                        <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">全 AI 生成冥想視覺體驗</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                            <i class="fa-solid fa-play text-xl ml-1"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative rounded-xl overflow-hidden cursor-pointer aspect-video">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract AI" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-100"></div>
+                    <div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <span class="text-xs font-bold tracking-wider text-brand-gold uppercase mb-2 block">Electronic / Experimental</span>
+                        <h3 class="text-2xl font-serif font-bold text-white mb-1">Synapse 突觸</h3>
+                        <p class="text-gray-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">音頻驅動抽象粒子視覺</p>
+                    </div>
+                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                            <i class="fa-solid fa-play text-xl ml-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow / Features -->
+    <section id="features" class="py-24 relative z-20 bg-brand-dark overflow-hidden">
+        <!-- decorative bg element -->
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-gold/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-5xl font-serif font-bold mb-6">AI 賦能的<br>創作工作流</h2>
+                    <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                        我們整合最新的生成式 AI 模型（如 Midjourney, Stable Diffusion, Sora 等），結合專業後期軟體，打造獨一無二的視覺饗宴。
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full border border-brand-gold flex items-center justify-center text-brand-gold font-bold">1</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg mb-1">音樂解析與概念提取</h4>
+                                <p class="text-gray-400 text-sm">深入分析音樂節奏、情感與歌詞，與您共同討論並確立視覺風格基調。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full border border-brand-gold flex items-center justify-center text-brand-gold font-bold">2</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg mb-1">AI 分鏡與靜態概念圖</h4>
+                                <p class="text-gray-400 text-sm">利用 AI 快速生成多組高質感分鏡草圖，確保製作方向精準符合預期。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full border border-brand-gold flex items-center justify-center text-brand-gold font-bold">3</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg mb-1">動態生成與音畫同步</h4>
+                                <p class="text-gray-400 text-sm">將靜態圖像轉化為流暢動態，並通過音頻分析技術實現畫面與節奏的完美契合。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full border border-brand-gold flex items-center justify-center text-brand-gold font-bold">4</div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg mb-1">專業調色與後期合成</h4>
+                                <p class="text-gray-400 text-sm">傳統與科技結合，進行精細的調色、特效疊加與轉場處理，提升電影級質感。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Visual Element (Mockup of a dashboard/process) -->
+                <div class="relative">
+                    <div class="glass-panel rounded-2xl p-2 shadow-2xl">
+                        <div class="bg-black/50 rounded-xl overflow-hidden aspect-[4/3] relative border border-white/10 flex items-center justify-center">
+                            <!-- Animated soundwave mockup -->
+                            <div class="flex items-center gap-1 h-32 px-8 w-full opacity-50">
+                                <div class="w-full h-2 bg-brand-gold/80 rounded-full animate-[pulse_1s_ease-in-out_infinite]"></div>
+                                <div class="w-full h-8 bg-brand-gold/80 rounded-full animate-[pulse_1.2s_ease-in-out_infinite_0.1s]"></div>
+                                <div class="w-full h-16 bg-brand-gold/80 rounded-full animate-[pulse_0.9s_ease-in-out_infinite_0.2s]"></div>
+                                <div class="w-full h-24 bg-brand-gold/80 rounded-full animate-[pulse_1.5s_ease-in-out_infinite_0.3s]"></div>
+                                <div class="w-full h-12 bg-brand-gold/80 rounded-full animate-[pulse_1.1s_ease-in-out_infinite_0.4s]"></div>
+                                <div class="w-full h-6 bg-brand-gold/80 rounded-full animate-[pulse_1.3s_ease-in-out_infinite_0.5s]"></div>
+                                <div class="w-full h-10 bg-brand-gold/80 rounded-full animate-[pulse_1s_ease-in-out_infinite_0.6s]"></div>
+                            </div>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-white/50 backdrop-blur-sm bg-black/40">
+                                <i class="fa-solid fa-wand-magic-sparkles text-4xl mb-2 text-brand-gold"></i>
+                                <span class="font-mono text-sm tracking-widest uppercase">Rendering Visuals...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Decorative glowing orbs -->
+                    <div class="absolute -top-4 -right-4 w-24 h-24 bg-brand-gold/30 rounded-full blur-xl animate-pulse"></div>
+                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-500/20 rounded-full blur-xl animate-pulse delay-700"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 relative z-20 bg-[#0a0a0a] border-t border-white/5">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-6xl font-serif font-bold mb-6">準備好視覺化您的音樂了嗎？</h2>
+            <p class="text-gray-400 mb-10 text-lg">留下您的聯絡方式與初步構想，我們的製作團隊將盡快與您聯繫，為您量身打造專屬的 AI MV 方案。</p>
+            
+            <!-- Embedded Google Form (silent submit via hidden iframe) -->
+            <form id="gform-contact" class="glass-panel p-8 rounded-2xl text-left space-y-6" method="POST" action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSeG5Q0nqJA4dy3F78XEhU3SW2ZKEKajZDpStT6QVDGZsnLg5Q/formResponse" target="hidden_iframe_contact" onsubmit="return submitGForm(event)">
+                <!-- NOTE: entry IDs were extracted from FB_PUBLIC_LOAD_DATA_ in the original Google Form source -->
+                <input type="hidden" name="fvv" value="1">
+                <input type="hidden" name="fbzx" value="4998481223410899996">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="g_name" class="block text-sm font-medium text-gray-400 mb-2">姓名 / 單位</label>
+                        <input id="g_name" name="entry.1828672223" type="text" required class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors" placeholder="您的名字">
+                    </div>
+                    <div>
+                        <label for="g_email" class="block text-sm font-medium text-gray-400 mb-2">聯絡信箱</label>
+                        <input id="g_email" name="entry.267269794" type="email" required class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors" placeholder="email@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label for="g_type" class="block text-sm font-medium text-gray-400 mb-2">企劃類型</label>
+                    <input id="g_type" name="entry.98510672" type="text" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors" placeholder="例如：MV / 廣告 / 宣傳片">
+                </div>
+                <div>
+                    <label for="g_desc" class="block text-sm font-medium text-gray-400 mb-2">需求簡述</label>
+                    <textarea id="g_desc" name="entry.663583590" rows="4" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors" placeholder="請簡述您的音樂類型及希望呈現的視覺氛圍..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 rounded-lg bg-brand-gold text-brand-dark font-bold text-lg hover:bg-yellow-400 transition-colors shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)]">
+                    送出詢問
+                </button>
+            </form>
+
+            <!-- Hidden iframe target so submission doesn't navigate the main page -->
+            <iframe name="hidden_iframe_contact" id="hidden_iframe_contact" style="display:none;"></iframe>
+
+            <!-- Success modal (hidden by default) -->
+            <div id="gform-success" class="fixed inset-0 flex items-center justify-center bg-black/60 hidden z-50">
+                <div class="glass-panel max-w-xl mx-4 p-8 rounded-3xl text-center">
+                    <h3 class="text-2xl font-serif font-bold text-white mb-4">需求已送出，我們將盡快與您聯絡！</h3>
+                    <p class="text-gray-300 mb-6">感謝您對 AuraMV 的信任。若您提供了聯絡方式，我們會在 2 個工作日內回覆。</p>
+                    <button id="gform-success-close" class="px-6 py-3 rounded-full bg-brand-gold text-brand-dark font-bold hover:bg-yellow-400 transition-colors">關閉</button>
+                </div>
+            </div>
+
+            <script>
+                // Submit the form into the hidden iframe and show a custom modal when the iframe loads (submission complete)
+                function submitGForm(e) {
+                    // allow the form to submit to the hidden iframe
+                    var form = document.getElementById('gform-contact');
+
+                    // Basic validation already enforced via required attributes
+
+                    // Show a subtle sending state
+                    var btn = form.querySelector('button[type="submit"]');
+                    var originalText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = '傳送中...';
+
+                    // Listen for iframe load which indicates the formResponse page has loaded into the iframe
+                    var iframe = document.getElementById('hidden_iframe_contact');
+                    var handled = false;
+                    var onload = function() {
+                        if (handled) return;
+                        handled = true;
+
+                        // Reset form and show modal
+                        form.reset();
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+
+                        var modal = document.getElementById('gform-success');
+                        modal.classList.remove('hidden');
+
+                        // Remove listener after handled
+                        iframe.removeEventListener('load', onload);
+                    };
+
+                    iframe.addEventListener('load', onload);
+
+                    // Let the browser submit the form into the iframe (no redirect of main page)
+                    return true;
+                }
+
+                // Close modal handler
+                document.addEventListener('click', function (ev) {
+                    if (ev.target && ev.target.id === 'gform-success-close') {
+                        document.getElementById('gform-success').classList.add('hidden');
+                    }
+                });
+
+                // Also close modal when clicking on backdrop
+                document.getElementById('gform-success').addEventListener('click', function (ev) {
+                    if (ev.target === this) {
+                        this.classList.add('hidden');
+                    }
+                });
+            </script>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12 border-t border-white/10 relative z-20">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-2xl font-serif font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-brand-gold"></i>
+                <span>Aura<span class="text-brand-gold">MV</span></span>
+            </div>
+            
+            <div class="flex space-x-6">
+                <a href="#" class="text-gray-500 hover:text-white transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+                <a href="#" class="text-gray-500 hover:text-white transition-colors"><i class="fa-brands fa-youtube text-xl"></i></a>
+                <a href="#" class="text-gray-500 hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+            </div>
+
+            <p class="text-gray-600 text-sm">
+                &copy; 2026 AuraMV Production. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navigation Scroll Effect ---
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+            } else {
+                navbar.classList.remove('scrolled');
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+            }
+        });
+
+        // --- Mobile Menu Toggle ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- YouTube iframe API setup for Background Video ---
+        // Load the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        // The ID of the provided YouTube video "Moon Within"
+        var videoId = 'X4ecR8_F0Qo'; 
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,     // Hide player controls
+                    'showinfo': 0,     // Hide video title and uploader (deprecated but sometimes helps)
+                    'modestbranding': 1, // Minimize YouTube logo
+                    'loop': 1,         // Loop the video
+                    'playlist': videoId, // Required for looping single video
+                    'fs': 0,           // Disable fullscreen button
+                    'cc_load_policy': 0, // Disable captions
+                    'iv_load_policy': 3, // Hide video annotations
+                    'autohide': 0,
+                    'mute': 1          // Mute is required for autoplay in most browsers
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // The API will call this function when the video player is ready.
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            // Optional: Unmute if you want the user to hear it immediately, 
+            // but modern browsers usually block unmuted autoplay.
+            // Keeping it muted is safer for backgrounds.
+            event.target.mute();
+            
+            // Slowly fade in the video once it's ready
+            setTimeout(() => {
+                 document.querySelector('#youtube-player').style.opacity = '1';
+            }, 1000);
+        }
+
+        // Handle loop explicitly just in case playerVars loop fails
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                player.playVideo(); 
+            }
+        }
+    </script>
+</body>
+</html>
