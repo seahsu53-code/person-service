@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 創新顧問 | 企業級 AI 解決方案與數據策略專家</title>
+    <meta name="description" content="擁有16年實務經驗的 AI 產品經理與專業顧問。專注於資料科學、人工智慧與營運管理，為企業建構具備高度可行性的數位轉型藍圖。">
+    
+    <!-- 引入字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入 Phosphor Icons 替換傳統 icon 以提升高級感 -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- 引入 Font Awesome 用於品牌圖示 (GitHub, YouTube 等) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pb/MmYVf5f7Y6i0R6b1K5bYk1Qk6u9RZ1G1Q1Y1Q1Y1Q1Y1Q1Y1Q1Y1Q1Y1Q1Y1Q" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- 配置 Tailwind 主題色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        /*
+                          Palette mapped from provided brand color guide (ITRI-like).
+                          Assumptions: where exact hex not specified in the image, a close
+                          perceptual match was chosen. If you have precise hex values,
+                          I can swap them in.
+                        */
+                        tech: {
+                            // Primary
+                            blue: '#0077CB',         // ITRI Blue (primary brand blue)
+                            deepBlue: '#003D73',     // Deep Blue
+                            // Secondary
+                            green: '#00B37E',        // Sustainability Green
+                            teal: '#00A5B5',         // Teal
+                            purple: '#6A5ACD',       // Innovation Purple
+                            // Accent colors
+                            orange: '#FF8A00',       // Energy Orange
+                            red: '#E53935',          // Alert Red
+                            yellow: '#FFC107',       // Warm Yellow
+                            // Utilities
+                            white: '#ffffff',
+                            gray: '#F5F7FA',
+                            slate: '#94a3b8',
+                            dark: '#003D73'
+                        },
+                        /* convenience aliases for backwards compatibility with existing classes */
+                        'brand-blue': '#0077CB',
+                        'brand-deep': '#003D73',
+                        'brand-green': '#00B37E',
+                        'brand-teal': '#00A5B5',
+                        'brand-purple': '#6A5ACD',
+                        'accent-orange': '#FF8A00',
+                        'accent-red': '#E53935',
+                        'accent-yellow': '#FFC107'
+                    },
+                    boxShadow: {
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 20px rgba(16, 185, 129, 0.4)',
+                        'blue-glow': '0 0 30px rgba(37, 99, 235, 0.2)',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'mesh': 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z\' fill=\'%23f1f5f9\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 自訂 CSS 動畫與特效 -->
+    <style>
+        /* 隱藏滾動條但保持可滾動 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8fafc; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* 打字機游標動畫 */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* 滾動進場動畫基底類別 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 玻璃擬態質感 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* 漸層文字 */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* 確保背景畫布置於最底層 */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+    </head>
+    <body class="bg-[#F5F7FA] text-[#003D73] antialiased relative selection:bg-[#0077CB] selection:text-white">
+
+    <!-- 科技感背景網格與粒子畫布 -->
+    <div class="fixed inset-0 bg-mesh z-[-2] opacity-50 pointer-events-none"></div>
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- 導覽列 (玻璃擬態) -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="glass-panel rounded-full px-6 py-3 flex justify-between items-center shadow-glass">
+                <a href="#" class="text-xl font-bold tracking-wider flex items-center gap-2">
+                    <i class="ph-fill ph-hexagon text-[#0077CB] text-2xl"></i>
+                    <span class="bg-gradient-to-r from-[#0077CB] to-[#6A5ACD] text-gradient">AI.Consult</span>
+                </a>
+                
+                <!-- 桌面版選單 -->
+                <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-600">
+                    <a href="#about" class="hover:text-[#0077CB] transition-colors">關於我</a>
+                    <a href="#services" class="hover:text-[#0077CB] transition-colors">AI 解決方案</a>
+                    <a href="#portfolio" class="hover:text-[#0077CB] transition-colors">專案案例</a>
+                    <a href="#blog" class="hover:text-[#0077CB] transition-colors">技術洞察</a>
+                </nav>
+
+                <!-- CTA 按鈕 -->
+                <a href="https://calendar.app.google/6t35YFe97oXRyVwB9" target="_blank" class="hidden md:inline-flex items-center gap-2 bg-[#003D73] text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-[#0077CB] transition-all duration-300 shadow-md" rel="noopener noreferrer">
+                    預約諮詢 <i class="ph ph-arrow-right"></i>
+                </a>
+
+                <!-- 手機版漢堡選單圖示 -->
+                <button class="md:hidden text-2xl text-slate-700" id="mobile-menu-btn">
+                    <i class="ph ph-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 首頁 Hero 區塊 -->
+    <section class="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden">
+        <!-- 背景柔和光暈 -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-[#0077CB]/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 left-1/3 w-[600px] h-[600px] bg-gradient-radial from-[#6A5ACD]/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <!-- 信任徽章 -->
+            <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#e6f6ff] border border-[#ccecff] text-[#0077CB] text-xs font-semibold tracking-wide uppercase mb-8 shadow-sm">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0077CB] opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-[#0077CB]"></span>
+                </span>
+                Senior AI Product Manager & Consultant
+            </div>
+
+            <!-- 主標題 (打字機效果容器) -->
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-tight mb-6 min-h-[120px] md:min-h-[160px] flex items-center justify-center flex-col">
+                <span id="typewriter-text" class="bg-gradient-to-r from-slate-900 via-[#0077CB] to-[#6A5ACD] text-gradient"></span>
+                <span class="cursor-blink text-[#0077CB] mt-2">_</span>
+            </h1>
+
+            <!-- 副標題 -->
+            <p class="reveal text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                數據是驅動創新的核心引擎。結合精準數據分析與商業洞察，為企業量身打造具備高度可行性的數位轉型與 AI 導入藍圖。
+            </p>
+
+            <!-- CTA 按鈕群 -->
+            <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+                <!-- 預約諮詢按鈕 (帶有高轉換設計要求) -->
+                <div class="relative group">
+                    <!-- Hover 時浮現的文字狀態 -->
+                    <div class="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 pointer-events-none z-20">
+                        <div class="bg-white border border-[#00B37E]/20 shadow-lg text-[#00B37E] text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#00B37E] animate-pulse"></span>
+                            Status: Ready to Connect
+                        </div>
+                    </div>
+                    
+                    <a href="https://calendar.app.google/6t35YFe97oXRyVwB9" target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center justify-center gap-2 bg-[#0077CB] text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:bg-[#005fa8] transform hover:-translate-y-1 w-full sm:w-auto z-10 overflow-hidden">
+                        <!-- 按鈕內部漸層流動光效 -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                        預約諮詢
+                        <i class="ph-bold ph-calendar-plus"></i>
+                    </a>
+                </div>
+
+                <a href="#services" class="inline-flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:border-[#0077CB] hover:text-[#0077CB] hover:shadow-md transform hover:-translate-y-1 w-full sm:w-auto">
+                    查看服務
+                    <i class="ph-bold ph-caret-down"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 展示相簿：內訓與專案現場照片 -->
+    <section id="gallery" class="py-16 relative z-10 bg-white/60 backdrop-blur-sm border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-8 reveal text-center">
+                <h2 class="text-sm font-bold text-[#0077CB] tracking-widest uppercase mb-3">內訓與專案</h2>
+                <h3 class="text-2xl font-bold text-slate-900">現場紀實與教學片段</h3>
+                <p class="text-slate-600 mt-2">以下為近期在頂尖機構之內訓與專案展示，可點擊放大檢視原始影像。</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- thumbnails linking to full images -->
+                <a href="./mywork/台灣 Top3 IC設計-expo-stage-02.jpg" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                    <img src="./mywork/台灣 Top3 IC設計-expo-stage-02.jpg" alt="IC 設計 展場" class="w-full h-44 object-cover" />
+                </a>
+
+                <a href="./mywork/台灣 Top3 航空業-training-classroom-04.png" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                    <img src="./mywork/台灣 Top3 航空業-training-classroom-04.png" alt="航空業內訓現場" class="w-full h-44 object-cover" />
+                </a>
+
+                <a href="./mywork/台灣 Top3 電信業-training-classroom-01.png" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                    <img src="./mywork/台灣 Top3 電信業-training-classroom-01.png" alt="電信業內訓現場" class="w-full h-44 object-cover" />
+                </a>
+
+                <a href="./mywork/國科會-expo-stage-01.jpg" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                    <img src="./mywork/國科會-expo-stage-01.jpg" alt="國科會 展場" class="w-full h-44 object-cover" />
+                </a>
+
+                <a href="./mywork/工研院-training-classroom-02.png" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                    <img src="./mywork/工研院-training-classroom-02.png" alt="工研院 內訓" class="w-full h-44 object-cover" />
+                </a>
+
+                <a href="./mywork/資策會-training-classroom-03.png" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-shadow transform hover:-translate-y-1">
+                    <img src="./mywork/資策會-training-classroom-03.png" alt="資策會 內訓" class="w-full h-44 object-cover" />
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 關於我區塊 -->
+    <section id="about" class="py-24 relative z-10 bg-white/50 backdrop-blur-sm border-y border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- 左側：品牌敘事 -->
+                <div class="reveal">
+                    <h2 class="text-sm font-bold text-[#0077CB] tracking-widest uppercase mb-3">About Me</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-snug">
+                        化複雜數據為 <br>
+                        <span class="bg-gradient-to-r from-[#0077CB] to-[#6A5ACD] text-gradient">具體商業行動方案</span>
+                    </h3>
+                    <div class="space-y-4 text-slate-600 leading-relaxed text-lg mb-8">
+                        <p>
+                            我是一位具備 16 年實務經驗的 AI 產品經理與專業顧問。深信數據是驅動企業創新的核心引擎，專注於資料科學、人工智慧與營運管理的深度融合。
+                        </p>
+                        <p>
+                            具備 <strong>PMP 國際專案管理師</strong> 與 <strong>iPAS AI 應用規劃師</strong> 雙重認證。採取懷疑、追問與驗證的思維，從商業痛點剖析到 AI 模型與自動化架構建置，為企業提供前瞻性的專業見解。
+                        </p>
+                        <p class="font-medium text-slate-800 border-l-4 border-tech-purple pl-4 italic">
+                            面對快速變動的數位時代，我始終以數據分析為依據，洞察市場趨勢，提供嚴格、正面、具體且可執行的建議。協助您在數據時代中脫穎而出。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 右側：個人檔案卡與核心優勢 -->
+                <div class="reveal space-y-6">
+                    <!-- 個人檔案卡 (Headshot) -->
+                    <div class="glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
+                        <img src="./mywork/鍾皓軒-headshot-01.jpg" alt="鍾皓軒 Headshot" class="w-28 h-28 rounded-full object-cover ring-4 ring-white shadow-lg" />
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900 mb-1">鍾皓軒 (Howard Zhong)</h4>
+                            <p class="text-slate-600 text-sm mb-2">資深 AI 產品經理 & 顧問 — 16 年跨產業實務經驗，專注於資料科學、AI 導入與企業訓練。</p>
+                            <div class="flex items-center gap-3">
+                                <a href="https://www.linkedin.com/in/howardzhong/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm text-[#0077CB] hover:underline">
+                                    <i class="fa-brands fa-linkedin text-lg"></i>
+                                    LinkedIn
+                                </a>
+                                <a href="mailto:hello@example.com" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-[#0077CB]">
+                                    <i class="ph ph-envelope"></i>
+                                    聯絡我
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 1 -->
+                    <div class="glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-[#e6f6ff] text-[#0077CB] flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
+                                <i class="ph-fill ph-strategy"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900 mb-2">跨域融合思維與端到端落地</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    將醫療、製造、行銷營運實務經驗結合資料科學，具備從零到一建置 AI 專案與自動化架構的完整落地能力。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 卡片 2 -->
+                    <div class="glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-[#f2f0ff] text-[#6A5ACD] flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
+                                <i class="ph-fill ph-buildings"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900 mb-2">跨產業 AI 賦能成功案例</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    主導金融、醫療、化工、網路廣告等多產業專案，成功優化連續性製程並制定精準行銷數據漏斗。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 3 -->
+                    <div class="glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow duration-300 group">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-[#e8fbf4] text-[#00B37E] flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
+                                <i class="ph-fill ph-chalkboard-teacher"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-900 mb-2">頂尖機構培訓與國際化領導</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    擔任中華電信、長榮航空、工研院及多所頂尖大學 AI 專業講師；曾以全英文授課帶領新南向跨國創業團隊。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- AI 解決方案服務區塊 -->
+    <section id="services" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- 區塊標題 -->
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="text-sm font-bold text-[#0077CB] tracking-widest uppercase mb-3">AI Solutions</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">全方位企業級 AI 解決方案</h3>
+                <p class="text-slate-600 text-lg">
+                    在數位轉型浪潮中，我們提供兼具前瞻性與高執行力的策略。結合精準數據分析與專案管理實戰經驗，為客戶量身打造自動化與智慧化的升級架構。
+                </p>
+            </div>
+
+            <!-- 服務卡片網格 -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                <!-- 服務 1 -->
+                <div class="reveal glass-panel p-8 rounded-3xl border border-slate-200 hover:border-[#0077CB]/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#0077CB]/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <i class="ph-duotone ph-robot text-4xl text-[#0077CB] mb-6 block"></i>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">客製化智能聊天機器人</h4>
+                    <p class="text-slate-600 text-sm mb-4">導入先進 NLP 技術，打造自動化客服與導購助手，提升全天候顧客體驗與業務轉化率。</p>
+                    <div class="text-xs font-semibold text-[#0077CB] bg-[#e6f6ff] inline-block px-3 py-1 rounded-full">適合：電商/客服/金融</div>
+                </div>
+
+                <!-- 服務 2 -->
+                <div class="reveal glass-panel p-8 rounded-3xl border border-slate-200 hover:border-[#6A5ACD]/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden" style="transition-delay: 100ms;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#6A5ACD]/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <i class="ph-duotone ph-gears text-4xl text-[#6A5ACD] mb-6 block"></i>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">機器人流程自動化 (RPA)</h4>
+                    <p class="text-slate-600 text-sm mb-4">梳理企業跨系統作業流程，開發自動化腳本取代重複性人工任務，大幅降低營運成本。</p>
+                    <div class="text-xs font-semibold text-[#6A5ACD] bg-[#f2f0ff] inline-block px-3 py-1 rounded-full">適合：製造/行政/營運</div>
+                </div>
+
+                <!-- 服務 3 -->
+                <div class="reveal glass-panel p-8 rounded-3xl border border-slate-200 hover:border-[#00B37E]/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden" style="transition-delay: 200ms;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#00B37E]/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <i class="ph-duotone ph-chart-line-up text-4xl text-[#00B37E] mb-6 block"></i>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">預測模型與數據分析</h4>
+                    <p class="text-slate-600 text-sm mb-4">運用機器學習建立預測模型，洞察市場趨勢與製程優化空間，以數據驅動精準商業決策。</p>
+                    <div class="text-xs font-semibold text-[#00B37E] bg-[#e8fbf4] inline-block px-3 py-1 rounded-full">適合：行銷/化工/醫療</div>
+                </div>
+
+                <!-- 服務 4 -->
+                <div class="reveal glass-panel p-8 rounded-3xl border border-slate-200 hover:border-pink-500/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#fff0f6] rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <i class="ph-duotone ph-brain text-4xl text-pink-500 mb-6 block"></i>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">私有化知識庫建置</h4>
+                    <p class="text-slate-600 text-sm mb-4">結合 LLM 技術與企業內部機密文件，打造專屬 AI 企業大腦，確保資安同時提升知識檢索效率。</p>
+                    <div class="text-xs font-semibold text-brand-purple bg-[#fff0f6] inline-block px-3 py-1 rounded-full">適合：大型企業/研發/法務</div>
+                </div>
+
+                <!-- 服務 5 -->
+                <div class="reveal glass-panel p-8 rounded-3xl border border-slate-200 hover:border-amber-500/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden" style="transition-delay: 100ms;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#fff7e6] rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <i class="ph-duotone ph-users-three text-4xl text-amber-500 mb-6 block"></i>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">建置 AI 團隊與戰略規劃</h4>
+                    <p class="text-slate-600 text-sm mb-4">協助組織從零到一建立內部資料科學團隊，設計行銷自動化漏斗，提供高階 AI 顧問導入策略。</p>
+                    <div class="text-xs font-semibold text-accent-orange bg-[#fff7e6] inline-block px-3 py-1 rounded-full">適合：尋求轉型之中高階主管</div>
+                </div>
+
+                <!-- 服務 6 -->
+                <div class="reveal glass-panel p-8 rounded-3xl border border-slate-200 hover:border-cyan-500/30 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden" style="transition-delay: 200ms;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#e6fbff] rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <i class="ph-duotone ph-presentation-chart text-4xl text-cyan-500 mb-6 block"></i>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">AI 工具與企業教育訓練</h4>
+                    <p class="text-slate-600 text-sm mb-4">引進 AI 繪圖、生成式設計等前沿工具，舉辦定製化內部培訓，全面提升團隊數位賦能素養。</p>
+                    <div class="text-xs font-semibold text-brand-teal bg-[#e6fbff] inline-block px-3 py-1 rounded-full">適合：全產業/品牌行銷部門</div>
+                </div>
+            </div>
+
+            <!-- 服務轉換文案 -->
+            <div class="reveal bg-gradient-to-r from-slate-900 to-tech-dark rounded-3xl p-10 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">準備好讓 AI 成為您的競爭優勢了嗎？</h3>
+                    <p class="text-slate-300 mb-8 max-w-2xl mx-auto">不要讓複雜的技術名詞成為轉型阻礙。讓我們以實務經驗出發，為您的企業制定清晰、可執行的 AI 導入藍圖。</p>
+                    <a href="https://calendar.app.google/6t35YFe97oXRyVwB9" target="_blank" class="inline-flex items-center gap-2 bg-tech-blue text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-blue-600 transition-colors shadow-lg hover:shadow-blue-glow">
+                        立即預約顧問諮詢 <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品集 / 案例展示區塊 (Mockup) -->
+    <section id="portfolio" class="py-24 relative z-10 bg-white/50 backdrop-blur-sm border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-12 reveal">
+                <div>
+                    <h2 class="text-sm font-bold text-[#6A5ACD] tracking-widest uppercase mb-3">Portfolio</h2>
+                    <h3 class="text-3xl font-bold text-slate-900">成功案例展示</h3>
+                </div>
+                <a href="#" class="hidden md:inline-flex items-center gap-1 text-[#0077CB] font-medium hover:underline">
+                    查看所有案例 <i class="ph-bold ph-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 案例 1 -->
+                <div class="reveal group cursor-pointer">
+                    <div class="relative h-64 rounded-2xl overflow-hidden mb-4 bg-slate-100 border border-slate-200 flex items-center justify-center">
+                        <!-- 模擬圖片/圖表區域 -->
+                        <i class="ph-duotone ph-factory text-6xl text-slate-300 group-hover:scale-110 transition-transform duration-500"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white text-sm font-medium border border-white/30 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full">查看完整報告</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-bold text-[#0077CB] tracking-wider uppercase">化學工業</span>
+                        <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <span class="text-xs text-slate-500">連續性製程優化</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#0077CB] transition-colors">廠區自動化數據預測模型</h4>
+                    <p class="text-slate-600 text-sm">透過機器學習演算法即時監控生產參數，成功降低 15% 的製程耗損並提升整體良率。</p>
+                </div>
+
+                <!-- 案例 2 -->
+                <div class="reveal group cursor-pointer" style="transition-delay: 100ms;">
+                    <div class="relative h-64 rounded-2xl overflow-hidden mb-4 bg-slate-100 border border-slate-200 flex items-center justify-center">
+                        <i class="ph-duotone ph-storefront text-6xl text-slate-300 group-hover:scale-110 transition-transform duration-500"></i>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white text-sm font-medium border border-white/30 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full">查看完整報告</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-bold text-[#6A5ACD] tracking-wider uppercase">網路廣告 & 電商</span>
+                        <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                        <span class="text-xs text-slate-500">精準行銷漏斗</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#6A5ACD] transition-colors">AI 驅動之個人化推薦系統</h4>
+                    <p class="text-slate-600 text-sm">整合多維度使用者行為數據，重構自動化行銷漏斗，使轉換率 (CVR) 提升達 28%。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技術部落格區塊 (Mockup) -->
+    <section id="blog" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-sm font-bold text-[#00B37E] tracking-widest uppercase mb-3">Insights</h2>
+                <h3 class="text-3xl font-bold text-slate-900">專業觀點與數據洞察</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- 文章 1 -->
+                <article class="reveal glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow border border-slate-200 flex flex-col h-full">
+                    <div class="text-xs font-medium text-slate-400 mb-3">Oct 24, 2023</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-3 leading-snug">企業如何評估導入生成式 AI 的投資報酬率 (ROI)？</h4>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">不再只是盲目追蹤科技熱潮。從營運痛點出發，建立具體的 AI 導入評估指標體系...</p>
+                    <a href="#" class="text-[#0077CB] font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all">
+                        閱讀更多 <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </article>
+
+                <!-- 文章 2 -->
+                <article class="reveal glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow border border-slate-200 flex flex-col h-full" style="transition-delay: 100ms;">
+                    <div class="text-xs font-medium text-slate-400 mb-3">Sep 12, 2023</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-3 leading-snug">從資料清理到機器學習：製造業製程優化實務指南</h4>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">探討連續性製程中的常見數據陷阱，以及如何透過特徵工程提取真正具備價值的商業洞察...</p>
+                    <a href="#" class="text-[#0077CB] font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all">
+                        閱讀更多 <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </article>
+
+                <!-- 文章 3 -->
+                <article class="reveal glass-panel p-6 rounded-2xl hover:shadow-lg transition-shadow border border-slate-200 flex flex-col h-full" style="transition-delay: 200ms;">
+                    <div class="text-xs font-medium text-slate-400 mb-3">Aug 05, 2023</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-3 leading-snug">跨國團隊溝通術：如何帶領敏捷開發團隊達成目標</h4>
+                    <p class="text-slate-600 text-sm mb-6 flex-grow">結合 PMP 專案管理實務與全英文授課經驗，分享在跨文化背景下推動專案落地的關鍵...</p>
+                    <a href="#" class="text-[#0077CB] font-medium text-sm flex items-center gap-1 hover:gap-2 transition-all">
+                        閱讀更多 <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾區塊 -->
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="lg:col-span-2">
+                    <a href="#" class="text-xl font-bold tracking-wider flex items-center gap-2 mb-4">
+                        <i class="ph-fill ph-hexagon text-[#0077CB] text-2xl"></i>
+                        <span class="text-slate-900">AI.Consult</span>
+                    </a>
+                    <p class="text-slate-500 text-sm max-w-sm mb-6 leading-relaxed">
+                        秉持創新、值得信賴與結果導向的核心價值，專注將複雜的人工智慧技術化為企業成長的堅實基石。
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-[#0077CB] hover:text-white transition-colors">
+                            <i class="ph-fill ph-linkedin-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-[#0077CB] hover:text-white transition-colors">
+                            <i class="ph-fill ph-envelope-simple text-xl"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-[#0077CB] hover:text-white transition-colors">
+                            <i class="ph-fill ph-github-logo text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">快速導覽</h4>
+                    <ul class="space-y-2 text-sm text-slate-500">
+                        <li><a href="#about" class="hover:text-[#0077CB] transition-colors">關於顧問</a></li>
+                        <li><a href="#services" class="hover:text-[#0077CB] transition-colors">解決方案</a></li>
+                        <li><a href="#portfolio" class="hover:text-[#0077CB] transition-colors">專案案例</a></li>
+                        <li><a href="#blog" class="hover:text-[#0077CB] transition-colors">技術文章</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4">聯絡與諮詢</h4>
+                    <ul class="space-y-3 text-sm text-slate-500">
+                        <!-- 外部依賴庫 (Dependencies) -->
+                        <li>
+                            <div class="font-semibold text-slate-900 mb-2">外部依賴庫 (Dependencies)</div>
+                            <div class="flex items-center gap-3">
+                                <a href="https://aistudy.pse.is/linemdsgroup" target="_blank" class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-green-500 text-white flex items-center justify-center hover:scale-105 transition-transform" title="LINE">
+                                    <!-- LINE brand icon (FontAwesome) -->
+                                    <i class="fab fa-line"></i>
+                                </a>
+                                <a href="https://www.facebook.com/MarketingDataScienceTMR/" target="_blank" class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 text-white flex items-center justify-center hover:scale-105 transition-transform" title="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/in/howardzhong/" target="_blank" class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-indigo-400 text-white flex items-center justify-center hover:scale-105 transition-transform" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="https://github.com/" target="_blank" class="w-9 h-9 rounded-full bg-gradient-to-br from-gray-800 to-black text-white flex items-center justify-center hover:scale-105 transition-transform" title="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </li>
+
+                        <!-- 聯絡表單卡片 -->
+                        <li>
+                            <div class="glass-panel p-3 rounded-lg">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <div class="font-semibold text-slate-900">填寫需求表單</div>
+                                        <div class="text-slate-500 text-xs">請簡要描述您的需求，我們會儘快回覆。</div>
+                                    </div>
+                                    <div>
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMJyXpvXHAOnrrSs7i31jOh9AUdo2ofWFRmBfnZEleD1Kf_w/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-[#0077CB] text-white px-4 py-2 rounded-full text-xs font-medium hover:bg-[#005fa8] transition-colors">前往填寫表單 <i class="ph ph-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-2">
+                            <i class="ph ph-calendar-check text-[#0077CB] mt-0.5"></i>
+                            <a href="https://calendar.app.google/6t35YFe97oXRyVwB9" target="_blank" rel="noopener noreferrer" class="hover:text-[#0077CB] transition-colors">預約線上諮詢 (Google Calendar)</a>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="ph ph-map-pin text-[#0077CB] mt-0.5"></i>
+                            <span>Taiwan / 支援跨國線上協作</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 核心產品與技術解決方案（新增） -->
+            <div class="pt-8 pb-6">
+                <h4 class="font-bold text-slate-900 mb-4">核心產品與技術解決方案</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm text-slate-600">
+                    <a href="https://www.youtube.com/watch?v=X4ecR8_F0Qo" target="_blank" class="flex items-start gap-3 p-3 sm:p-4 rounded-lg hover:bg-slate-50 transition-colors w-full">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-red-400 to-amber-300 text-white text-lg shadow-md">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-slate-900">Vibe Coding：行銷數據分析學習圈</div>
+                            <div class="text-slate-500 text-sm">訂閱Vibe Coding行銷數據分析學習圈，跟著我們一同走入行銷數據分析與vibe coding自動化的世界</div>
+                            <div class="mt-2 text-xs text-slate-300 flex items-center gap-2 bg-white/30 px-2 py-1 rounded-md inline-flex">
+                                <span aria-hidden="true">📈</span>
+                                <span aria-hidden="true">🤖</span>
+                                <span aria-hidden="true">⚙️</span>
+                                <span class="sr-only">指標、Automation、工具</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://www.youtube.com/watch?v=JsdvZre93Io&list=RDJsdvZre93Io&start_radio=1" target="_blank" class="flex items-start gap-3 p-3 sm:p-4 rounded-lg hover:bg-slate-50 transition-colors w-full">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-300 text-white text-lg shadow-md">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-slate-900">保險機器人：當經驗成為奇點，AI更是保險未來的引擎</div>
+                            <div class="text-slate-500 text-sm">從經驗、法條到正確說明，奇點讓每位保險專業者擁有一位懂法的科技夥伴。</div>
+                            <div class="mt-2 text-xs text-slate-300 flex items-center gap-2 bg-white/30 px-2 py-1 rounded-md inline-flex">
+                                <span aria-hidden="true">🛡️</span>
+                                <span aria-hidden="true">📚</span>
+                                <span aria-hidden="true">🔍</span>
+                                <span class="sr-only">保險、法規、查詢</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://www.youtube.com/watch?v=WQowk5RKiXw" target="_blank" class="flex items-start gap-3 p-3 sm:p-4 rounded-lg hover:bg-slate-50 transition-colors w-full">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-lime-300 text-white text-lg shadow-md">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-slate-900">SayMind： 一站式語音轉錄，AI 筆記整理，自動口條訓練</div>
+                            <div class="text-slate-500 text-sm">使用 LangChain 搭建的 RAG 系統，可上傳 PDF 並進行精準問答。</div>
+                            <div class="mt-2 text-xs text-slate-300 flex items-center gap-2 bg-white/30 px-2 py-1 rounded-md inline-flex">
+                                <span aria-hidden="true">🎙️</span>
+                                <span aria-hidden="true">📝</span>
+                                <span aria-hidden="true">⚡</span>
+                                <span class="sr-only">語音、筆記、加速</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+                <p>&copy; 2024 AI.Consult. All rights reserved.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-slate-600">隱私權政策</a>
+                    <a href="#" class="hover:text-slate-600">服務條款</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 互動邏輯腳本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. 打字機效果
+            const typeWriterElement = document.getElementById('typewriter-text');
+            const textToType = "啟動智慧轉型：精準賦能的企業級 AI 解決方案";
+            let i = 0;
+            
+            function typeWriter() {
+                if (i < textToType.length) {
+                    typeWriterElement.innerHTML += textToType.charAt(i);
+                    i++;
+                    // 隨機打字速度增加真實感
+                    setTimeout(typeWriter, Math.random() * 50 + 80);
+                }
+            }
+            // 延遲一點開始打字，讓畫面載入後再開始
+            setTimeout(typeWriter, 500);
+
+            // 2. 滾動動畫 (Scroll Reveal)
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // 可選：載入後解除觀察，讓動畫只播放一次
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // 3. 導覽列滾動效果 (背景變色/陰影)
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('py-2');
+                    navbar.classList.remove('py-4');
+                } else {
+                    navbar.classList.add('py-4');
+                    navbar.classList.remove('py-2');
+                }
+            });
+
+            // 4. 背景科技粒子動畫 (Canvas)
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let particlesArray = [];
+            
+            // 設定 Canvas 尺寸
+            function setCanvasSize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            setCanvasSize();
+            window.addEventListener('resize', setCanvasSize);
+
+            // 粒子類別
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.5; // 非常緩慢的移動
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                    // 淡藍色/灰色系
+                    this.color = `rgba(37, 99, 235, ${Math.random() * 0.2})`; 
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    // 邊界反彈
+                    if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                    if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            // 初始化粒子
+            function initParticles() {
+                particlesArray = [];
+                // 根據螢幕寬度決定粒子數量，保持輕盈感不雜亂
+                const numberOfParticles = (canvas.width * canvas.height) / 15000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particlesArray.push(new Particle());
+                }
+            }
+            initParticles();
+
+            // 動畫迴圈
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particlesArray.length; i++) {
+                    particlesArray[i].update();
+                    particlesArray[i].draw();
+                    
+                    // 繪製粒子間的連線
+                    for (let j = i; j < particlesArray.length; j++) {
+                        const dx = particlesArray[i].x - particlesArray[j].x;
+                        const dy = particlesArray[i].y - particlesArray[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // 距離小於 120 才連線
+                        if (distance < 120) {
+                            ctx.beginPath();
+                            // 距離越近線越明顯，整體極度柔和
+                            const opacity = 1 - (distance / 120);
+                            ctx.strokeStyle = `rgba(148, 163, 184, ${opacity * 0.15})`; // 淡灰色連線
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                            ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+            
+            // 重新計算粒子當視窗大小改變
+            window.addEventListener('resize', initParticles);
+        });
+    </script>
+</body>
+</html>
